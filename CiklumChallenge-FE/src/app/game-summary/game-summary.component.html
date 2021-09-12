@@ -1,0 +1,14 @@
+<br><br>
+  <table id="results">
+    <tr>
+      <th *ngFor = "let column of summaryHeaders">
+        {{column}}
+      </th>
+    </tr>
+    <tr>
+      <th>{{gameStatistics?.totalPlayed}}</th>
+      <th>{{gameStatistics?.totalFirstPlayerWins}}</th>
+      <th>{{gameStatistics?.totalSecondPlayerWins}}</th>
+      <th>{{gameStatistics?.totalDraws}}</th>
+    </tr>
+  </table>

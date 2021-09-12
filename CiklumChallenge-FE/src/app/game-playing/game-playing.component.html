@@ -1,0 +1,22 @@
+<h3>Use the buttons to restart a game or to play a round</h3>
+
+<button (click)= "startGame()" id="start-game-submit">Restart game</button>
+
+<button (click)= "playRound()" id="play-round">Play a round</button>
+
+<label id="lbl-round-counters">Number of played rounds:{{roundCounter}}</label>
+<br><br>
+<table id="results">
+  <tr>   
+    <th id="th-header" *ngFor = "let column of headers">
+      {{column}}
+    </th>
+  </tr>
+  <tr *ngFor="let round of game.rounds; let i = index;">
+    <th>Round_{{i+1}}</th>
+    <th>{{round.movePlayerOne}}</th>
+    <th>{{round.movePlayerTwo}}</th>
+    <th>{{round.roundResult}}</th>
+  </tr>
+
+</table>
