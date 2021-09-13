@@ -6,6 +6,7 @@ import com.amine.ciklumchallenge.model.Round
 import com.amine.ciklumchallenge.model.RoundResult
 import com.amine.ciklumchallenge.service.GameService
 import org.springframework.http.HttpStatus
+import org.springframework.web.server.ResponseStatusException
 import spock.lang.Specification
 
 import javax.servlet.http.HttpSession
@@ -14,6 +15,7 @@ class GameControllerSpec extends Specification {
 
     static final String SESSION_ID_1 = "123"
     static final String SESSION_ID_2 = "1234"
+    static final String EMPTY_SESSION_ID = ""
 
     def "When we call start a game with a session ID, a new game is started"() {
         given: "A request session info"
@@ -55,7 +57,7 @@ class GameControllerSpec extends Specification {
         }
     }
 
-    def "When we ask for a game bu its session it, the game is returned"() {
+    def "When we ask for a game by its session id, the game is returned"() {
         given: "A request session info"
         def mockHttpSession = Mock(HttpSession) {
             getId() >> SESSION_ID_1
@@ -119,6 +121,41 @@ class GameControllerSpec extends Specification {
         }
     }
 
+    def "When we call start a game with a not valid session id, an exception is thrown"() {
+        given: "A request session info"
+        def mockHttpSession = Mock(HttpSession) {
+            getId() >> EMPTY_SESSION_ID
+        }
+
+        and: "A game service"
+        def mockGameService = Mock(GameService) {
+            startGame(EMPTY_SESSION_ID) >> "build game"(EMPTY_SESSION_ID)
+        }
+
+        when: "Game is started"
+        def gameResponseEntity = new GameController(mockGameService).startGame(mockHttpSession)
+
+        then: "An exception is thrown"
+        thrown ResponseStatusException.class
+    }
+
+    def "When we ask for a game which session id does not exist previously, then an exception is thrown"() {
+        given: "A request session info"
+        def mockHttpSession = Mock(HttpSession) {
+            getId() >> SESSION_ID_1
+        }
+
+        def mockGameService = Mock(GameService) {
+            obtainGame(SESSION_ID_1) >> "build an empty optional game"()
+        }
+
+        when: "We call obtain game"
+        def game = new GameController(mockGameService).obtainGame(mockHttpSession)
+
+        then: "An exception is thrown"
+        game == null
+        thrown ResponseStatusException.class
+    }
 
     def "build game"(sessionId) {
         def expectedGame = new Game()
@@ -133,7 +170,12 @@ class GameControllerSpec extends Specification {
     }
 
     def "build optional game"(sessionId) {
-       def optionalGame = new Optional<>(new Game())
+        def optionalGame = new Optional<>(new Game())
+        optionalGame
+    }
+
+    def "build an empty optional game"() {
+        def optionalGame = new Optional<>()
         optionalGame
     }
 
