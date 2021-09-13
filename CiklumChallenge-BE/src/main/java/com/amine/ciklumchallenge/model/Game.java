@@ -17,7 +17,7 @@ public class Game implements Serializable {
 
     public void addRoundToGame(Round round) {
         if (rounds == null) {
-            rounds = new ArrayList<Round>();
+            rounds = new ArrayList<>();
         }
         rounds.add(round);
     }

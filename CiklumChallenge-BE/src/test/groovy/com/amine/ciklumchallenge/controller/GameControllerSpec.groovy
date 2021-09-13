@@ -25,7 +25,7 @@ class GameControllerSpec extends Specification {
 
         and: "A game service"
         def mockGameService = Mock(GameService) {
-            startGame(SESSION_ID_1) >> "build game"(SESSION_ID_1)
+            startGame(SESSION_ID_1) >> new Game()
         }
 
         when: "Game is started"
@@ -37,7 +37,6 @@ class GameControllerSpec extends Specification {
             getStatusCode() == HttpStatus.OK
         }
     }
-
 
     def "When we call getAllGames, all the already played games are returned"() {
         given: "Two request session info"
@@ -64,7 +63,7 @@ class GameControllerSpec extends Specification {
         }
 
         def mockGameService = Mock(GameService) {
-            obtainGame(SESSION_ID_1) >> "build optional game"(SESSION_ID_1)
+            obtainGame(SESSION_ID_1) >> Optional.of(new Game())
         }
 
         when: "We call obtain game"
@@ -85,7 +84,7 @@ class GameControllerSpec extends Specification {
 
         and: "A game service"
         def mockGameService = Mock(GameService) {
-            playRound(SESSION_ID_1) >> "build optional game with rounds"(SESSION_ID_1)
+            playRound(SESSION_ID_1) >> "build optional game with rounds"()
         }
 
         when: "A round is played"
@@ -99,12 +98,7 @@ class GameControllerSpec extends Specification {
     }
 
     def "When we asked for a game summary, the game statistics are provided"() {
-        given: "A request session info"
-        def mockHttpSession = Mock(HttpSession) {
-            getId() >> SESSION_ID_1
-        }
-
-        and: "A game service"
+        given: "A game service"
         def mockGameService = Mock(GameService) {
             getGameSummary() >> "build game summary"()
         }
@@ -129,11 +123,11 @@ class GameControllerSpec extends Specification {
 
         and: "A game service"
         def mockGameService = Mock(GameService) {
-            startGame(EMPTY_SESSION_ID) >> "build game"(EMPTY_SESSION_ID)
+            startGame(EMPTY_SESSION_ID) >> new Game()
         }
 
         when: "Game is started"
-        def gameResponseEntity = new GameController(mockGameService).startGame(mockHttpSession)
+        new GameController(mockGameService).startGame(mockHttpSession)
 
         then: "An exception is thrown"
         thrown ResponseStatusException.class
@@ -146,7 +140,7 @@ class GameControllerSpec extends Specification {
         }
 
         def mockGameService = Mock(GameService) {
-            obtainGame(SESSION_ID_1) >> "build an empty optional game"()
+            obtainGame(SESSION_ID_1) >> Optional.empty()
         }
 
         when: "We call obtain game"
@@ -157,11 +151,6 @@ class GameControllerSpec extends Specification {
         thrown ResponseStatusException.class
     }
 
-    def "build game"(sessionId) {
-        def expectedGame = new Game()
-        expectedGame
-    }
-
     def "build game summary"() {
         def gameStatistic = new GameStatistic()
         def roundResult = RoundResult.PLAYER_ONE_WINS
@@ -169,29 +158,18 @@ class GameControllerSpec extends Specification {
         gameStatistic
     }
 
-    def "build optional game"(sessionId) {
-        def optionalGame = new Optional<>(new Game())
-        optionalGame
-    }
-
-    def "build an empty optional game"() {
-        def optionalGame = new Optional<>()
-        optionalGame
-    }
-
-    def "build optional game with rounds"(sessionId) {
+    def "build optional game with rounds"() {
         def game = new Game()
         def round = new Round()
         round.playRound()
         game.addRoundToGame(round)
-        def optionalGame = new Optional<>(game)
-        optionalGame
+        Optional.of(game)
     }
 
     def "build two games"(sessionId_1, sessionId_2) {
         def Map<String, Game> gamesMap = new HashMap<>()
-        gamesMap.put(sessionId_1, "build game"(sessionId_1))
-        gamesMap.put(sessionId_2, "build game"(sessionId_2))
+        gamesMap.put(sessionId_1, new Game())
+        gamesMap.put(sessionId_2, new Game())
         gamesMap
     }
 

@@ -8,7 +8,7 @@ import static com.amine.ciklumchallenge.model.RoundResult.*
 
 class RoundSpec extends Specification {
 
-    Round round = new Round();
+    Round round = new Round()
 
     @Unroll("When we play a round with #move1 Vs #move2, the round result is #result")
     def "When we evaluate a round of two movement, the result is expected one"() {

@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class GameServiceSpec extends Specification {
 
-    IGameService gameService = new GameService();
+    IGameService gameService = new GameService()
 
     def "When we start a game, a game session is initialized for that session ID and without any rounds "() {
         given:
