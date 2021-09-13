@@ -25,7 +25,7 @@ Frontend part: As said in the exercise "Keep in mind this is a BE position, so g
 	* Launch the Frontend project with the command (ng serve) from the project folder.
 
 Running
-	* Once both parts (bakend and fronent) are running, open a browser with 	http://localhost:4200 and start playing the rock-scissor-paper game.
+* Once both parts (bakend and frontend) are running, open a browser with 	http://localhost:4200 and start playing the rock-scissor-paper game.
 
 Notes: Just to take into consideration:
 * I've used the following versions for Frontend part: Angular CLI: 12.2.0, Node: 14.17.4, Package Manager: npm 6.14.14. If you run an old version, it is posible that you need to update to a newer one. You can perform a basic update to the current stable release of the core framework and CLI using the command: ng update @angular/cli @angular/core
